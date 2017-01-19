@@ -13,7 +13,7 @@ import java.util.*;
  * Created by Taras on 02.01.2017.
  */
 public class Facebook {
-    private static final String ACCESS_TOKEN_VALUE = "EAACEdEose0cBAJ4gHCx1ZAp9RmoHgwjRRTQ7xYsKC4TWGC7Lgc6KMcw78kJWZB5hcCT7Tw3YWZA0HGrZCAZB43vpkOoazZC0u4Lw62KRz3OuAnJvZBxvnm4dkTv4JbK7xZBTniYLsgAVQ4ZByyuSZAXvVBpfwrZANFksuh6l1v8jtXSPAZDZD";
+    private static final String ACCESS_TOKEN_VALUE = "EAACEdEose0cBALlsU0HpTWC2pswXn1rqM0UC6ydd0SXmgwY5CoYeI4qBcVJ1ETzhe4TooljZCYkweNDQlZADWEu7x91IPJOysWyDDvLAZB1CgWQYRX3pR0LrmfZCQOBykM3EVzZCoV8ld6h3wAg0BOwJA5MM0EN9ZBV1tQKe3MsAZDZD";
 
     private static final String HOST = "graph.facebook.com";
     private static final String SCHEME = "https";
