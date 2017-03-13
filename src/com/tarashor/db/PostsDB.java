@@ -11,10 +11,45 @@ import java.util.Properties;
  * Created by Taras on 03.01.2017.
  */
 public class PostsDB {
-    private static final String connectionStringMYSQL = "jdbc:mysql://localhost:3306/facebookposts";
-    private static final String insertPostStringMYSQL = "Insert into posts (id, message, creation_date) values (?, ?, ?)";
+    private static final boolean CONNECT_TO_LOCAL = false;
+    private static final String CONNECTION_STRING_RDS_INSTANCE_AMAZON = "jdbc:mysql://mydbinstance.cn1x5dl6ou73.eu-central-1.rds.amazonaws.com:3306/facebookposts";
+    private static final String CONNECTION_STRING_LOCALHOST = "jdbc:mysql://localhost:3306/facebookposts";
+
+
+    private static Properties getConnectionPropertiesForLocalhost() {
+        Properties properties = new Properties();
+        properties.setProperty("user", "root");
+        properties.setProperty("password", "");
+        properties.setProperty("useUnicode","true");
+        properties.setProperty("characterEncoding","UTF-8");
+        return properties;
+    }
+
+    private static Properties getConnectionPropertiesForAmazonRDSInstance() {
+        Properties properties = new Properties();
+        properties.setProperty("user", "tarashor");
+        properties.setProperty("password", "TARAS1990");
+        properties.setProperty("useUnicode","true");
+        properties.setProperty("characterEncoding","UTF-8");
+        return properties;
+    }
+
+    private static Connection getConnection() throws SQLException {
+        return DriverManager.getConnection(getConnectionString(), getConnectionProperties());
+    }
+
+    private static Properties getConnectionProperties() {
+        return CONNECT_TO_LOCAL ? getConnectionPropertiesForLocalhost() : getConnectionPropertiesForAmazonRDSInstance();
+    }
+
+    private static String getConnectionString() {
+        return CONNECT_TO_LOCAL ? CONNECTION_STRING_LOCALHOST : CONNECTION_STRING_RDS_INSTANCE_AMAZON;
+    }
+
+
+    private static final String insertPostStringMYSQL = "replace into posts (id, message, creation_date) values (?, ?, ?)";
     private static final String selectPostsStringMYSQL = "select * from posts";
-    private static java.lang.String updateScorePostStringMYSQL = "UPDATE posts SET words_score = ? WHERE id = ?";
+    private static final String updateScorePostStringMYSQL = "UPDATE posts SET words_score = ? WHERE id = ?";
 
     private static final String insertFilteredPostStringMYSQL = "Insert into filtered_posts (facebook_id, message, creation_date) values (?, ?, ?)";
     private static final String selectFilteredPostsStringMYSQL = "select * from filtered_posts";
@@ -25,7 +60,7 @@ public class PostsDB {
     public static void savePostsInDB(List<Post> posts){
 
         try {
-            Connection con = DriverManager.getConnection(connectionStringMYSQL, getConnectionProperties());
+            Connection con = getConnection();
 
             PreparedStatement ps = con.prepareStatement(insertPostStringMYSQL);
 
@@ -45,11 +80,13 @@ public class PostsDB {
         }
     }
 
+
+
     public static List<Post> getPostsFromDB(){
         List<Post> posts = new ArrayList<>();
 
         try {
-            Connection con = DriverManager.getConnection(connectionStringMYSQL, getConnectionProperties());
+            Connection con = getConnection();
             Statement statement = con.createStatement();
             ResultSet resultSet = statement.executeQuery(selectPostsStringMYSQL);
             while(resultSet.next()){
@@ -75,7 +112,7 @@ public class PostsDB {
     public static void saveFilteredPostsInDB(List<FilteredPost> posts){
 
         try {
-            Connection con = DriverManager.getConnection(connectionStringMYSQL, getConnectionProperties());
+            Connection con = getConnection();
 
             PreparedStatement ps = con.prepareStatement(insertFilteredPostStringMYSQL);
 
@@ -100,7 +137,7 @@ public class PostsDB {
         List<FilteredPost> posts = new ArrayList<>();
 
         try {
-            Connection con = DriverManager.getConnection(connectionStringMYSQL, getConnectionProperties());
+            Connection con = getConnection();
             Statement statement = con.createStatement();
             ResultSet resultSet = statement.executeQuery(selectFilteredPostsStringMYSQL);
             while(resultSet.next()){
@@ -123,19 +160,11 @@ public class PostsDB {
         return posts;
     }
 
-    private static Properties getConnectionProperties() {
-        Properties properties = new Properties();
-        properties.setProperty("user", "root");
-        properties.setProperty("password", "");
-        properties.setProperty("useUnicode","true");
-        properties.setProperty("characterEncoding","UTF-8");
-        return properties;
-    }
 
     public static void updateScore(Post post, int score) {
         if (post != null && score != 0) {
             try {
-                Connection con = DriverManager.getConnection(connectionStringMYSQL, getConnectionProperties());
+                Connection con = getConnection();
 
                 PreparedStatement ps = con.prepareStatement(updateScorePostStringMYSQL);
 
@@ -156,7 +185,7 @@ public class PostsDB {
 
     public static void saveStatInDB(List<StatItem> statItems) {
         try {
-            Connection con = DriverManager.getConnection(connectionStringMYSQL, getConnectionProperties());
+            Connection con = getConnection();
 
             PreparedStatement ps = con.prepareStatement(insertStatStringMYSQL);
 
